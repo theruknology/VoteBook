@@ -19,7 +19,6 @@ const VoteNow = (props) => {
       }
     );
     const data = await response.json();
-    console.log(data);
 
     for (const key in data) {
       if (data[key].id == linkId) {
@@ -31,8 +30,6 @@ const VoteNow = (props) => {
         });
 
         setGivenOptions(opts);
-        console.log("setem up");
-        console.log(key);
         setError("");
         setSession(true);
       }
@@ -67,7 +64,6 @@ const VoteNow = (props) => {
 
   const sendVoteFetch = async (data) => {
     setLoading(true);
-    console.log({ data });
     const response = await fetch(
       "https://votebook-541b2-default-rtdb.firebaseio.com/votes.json",
       {
@@ -116,7 +112,10 @@ const VoteNow = (props) => {
           <p className="text-green-400">Vote has been submitted!</p>
           <a
             className="underline text-blue-500"
-            href={"http://localhost:5000/?resultlinkid=" + props.voteLink}
+            href={
+              "https://theruknology.github.io/VoteBook/?resultlinkid=" +
+              props.voteLink
+            }
           >
             See Results Here
           </a>

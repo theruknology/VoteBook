@@ -39,7 +39,6 @@ const NewPoll = () => {
     };
 
     submitFetchHandler(givenData).then((data) => {
-      console.log(data); // JSON data parsed by `data.json()` call
     });
   };
 

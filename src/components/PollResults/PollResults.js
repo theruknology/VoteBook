@@ -19,18 +19,14 @@ const PollResults = (props) => {
     if (!response.ok) {
       setLoading(false);
       setError("Found no poll");
-      console.log("issue");
       return data;
     }
 
-    console.log({ data });
     for (const key in data) {
       if (data[key].id == id) {
-        console.log("found one");
         setVoteData((prev) => {
           const newArr = [...prev];
           newArr.push(data[key]);
-          console.log({ newArr });
           return newArr;
         });
       }
@@ -48,7 +44,6 @@ const PollResults = (props) => {
       }
     );
     const data = await response.json();
-    console.log(data);
 
     if (!response.ok) {
       setError("Found no polls");
@@ -68,8 +63,6 @@ const PollResults = (props) => {
       }
     }
 
-    console.log(question);
-    console.log(options);
     setLoading(false);
     return data;
   };
@@ -77,7 +70,6 @@ const PollResults = (props) => {
   const voteCounter = () => {
     voteData.map((itm) => {
       itm.options.map((item) => {
-        console.log({ item });
         addVoteToOption(item);
       });
     });
@@ -87,7 +79,6 @@ const PollResults = (props) => {
     setOptions((prev) => {
       const newOpts = [...prev];
       const opt = newOpts.find((itm) => itm.id === id);
-      console.log(opt);
       opt.votes += 1;
 
       return newOpts;
@@ -97,21 +88,17 @@ const PollResults = (props) => {
   useEffect(() => {
     if (props.resultLink !== null) {
       const dataQ = getQFetchHandler(props.resultLink).then((value) => {
-        console.log("loading Results");
         const dataR = getResFetchHandler(props.resultLink).then((value) => {});
-        console.log("counting");
       });
     }
   }, []);
 
   useEffect(() => {
-    console.log({ options });
-    console.log({ voteData });
     voteCounter();
   }, [voteData]);
 
   return (
-    <div>
+    <div className="w-full p-4">
       {loading && <p>Loading...</p>}
       {props.resultLink == null && (
         <p>
@@ -119,9 +106,19 @@ const PollResults = (props) => {
           link is provided after every poll initiation.
         </p>
       )}
-      {error !== "" && !loading && <Error>{error}</Error>}
-      <h1>{question}</h1>
-      {voteData !== null && <PollOverview options={options} />}
+      {options.length == 0 && !loading && (
+        <Error>Something went wrong, please try again later!</Error>
+      )}
+      {voteData.length == 0 && options.length !== 0 && !loading && (
+        <Error>No votes yet!</Error>
+      )}
+      {voteData.length !== 0 && !loading && (
+        <>
+          <h1 className="font-bold text-gray-400">QUESTION:</h1>
+          <h2 className="pb-5">{question}</h2>
+          <PollOverview options={options} />
+        </>
+      )}
     </div>
   );
 };

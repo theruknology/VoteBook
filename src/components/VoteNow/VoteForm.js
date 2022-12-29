@@ -27,7 +27,6 @@ const VoteForm = (props) => {
       <h2 className="text-gray-400 font-bold">OPTIONS: </h2>
       <div className="flex flex-col gap-4 pb-5">
         {props.options.map((itm) => {
-          console.log(itm);
           return (
             <div key={itm.id} className="flex w-max justify-between gap-4">
               <input
