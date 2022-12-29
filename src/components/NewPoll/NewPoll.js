@@ -5,9 +5,10 @@ import Checkout from "./Checkout";
 import Error from "../UI/Error";
 
 const NewPoll = () => {
-  const [checkout, setCheckout] = useState(false);
+  const [checkout, setCheckout] = useState("");
   const [options, setOptions] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const addOption = (option) => {
     const givenOption = { id: crypto.randomUUID().toString(), title: option };
@@ -43,6 +44,7 @@ const NewPoll = () => {
   };
 
   const submitFetchHandler = async (data) => {
+    setLoading(true);
     const response = await fetch(
       "https://votebook-541b2-default-rtdb.firebaseio.com/polls.json",
       {
@@ -53,7 +55,12 @@ const NewPoll = () => {
         body: JSON.stringify(data),
       }
     );
-
+    if (!response.ok) {
+      setError("Something went wrong, try again later");
+      return response.json();
+    }
+    setLoading(false);
+    setCheckout(data.id);
     return response.json();
   };
 
@@ -62,24 +69,29 @@ const NewPoll = () => {
       <p className="italic text-gray-500">
         Please don't refresh or go back before completion
       </p>
-      <Form onSubmit={formSubmitHandler} onAddOption={addOption} />
+      {checkout === "" && (
+        <>
+          <Form onSubmit={formSubmitHandler} onAddOption={addOption} />
 
-      {options.length > 0 && (
-        <div className="flex flex-col gap-3 bg-gray-300 p-4 text-gray-700">
-          <h2>Given Options: {options.length}</h2>
-          {options.map((itm) => (
-            <OptionItem
-              key={itm.id}
-              onDelete={() => {
-                deleteOption(itm.id);
-              }}
-              name={itm.title}
-            />
-          ))}
-        </div>
+          {options.length > 0 && (
+            <div className="flex flex-col gap-3 bg-slate-600 p-4 text-gray-400 w-full">
+              <h2>Given Options: {options.length}</h2>
+              {options.map((itm) => (
+                <OptionItem
+                  key={itm.id}
+                  onDelete={() => {
+                    deleteOption(itm.id);
+                  }}
+                  name={itm.title}
+                />
+              ))}
+            </div>
+          )}
+        </>
       )}
       {error.length > 0 && <Error>{error}</Error>}
-      {checkout && <Checkout />}
+      {loading && <p>Loading...</p>}
+      {checkout !== "" && <Checkout link={checkout} />}
     </>
   );
 };

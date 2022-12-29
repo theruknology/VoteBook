@@ -21,14 +21,14 @@ const Form = (props) => {
         <input
           ref={questionInput}
           type="text"
-          maxLength="20"
+          maxLength="100"
           placeholder="here"
           className="bg-transparent placeholder:italic p-2 focus:outline-none focus:border-b-2 "
         />
       </div>
 
       <AddOption onAddOption={(opt)=>{props.onAddOption(opt)}}/>
-      <button type="submit" className="px-4 py-2 bg-slate-300 text-gray-800">Create Poll</button>
+      <button type="submit" className="px-4 py-2 bg-slate-300 text-gray-800 hover:bg-slate-600">Create Poll</button>
     </form>
   );
 };
